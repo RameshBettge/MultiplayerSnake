@@ -39,22 +39,33 @@ public class SocketIOC : MonoBehaviour
 
             JsonObject args = (JsonObject) message.Json.args[0];
 
+            Debug.Log(message.Json.name);
+            
             switch (message.Json.name)
             {
                 case "user-joined":
-                    Debug.Log("Join");
-                    Debug.Log( args.Values.ElementAt(0));
-                    Debug.Log((string) args.Values.ElementAt(1));
+                    if (args.Values.Count > 1)
+                    {
+                        Debug.Log((string) args.Values.ElementAt(1));
+                        GetComponent<GameManager>().spawnPlayer((string) args.Values.ElementAt(0));
+                    }
+
                     break;
                 case "user-left":
-                    Debug.Log("Leave");
-                    Debug.Log((string) args.Values.ElementAt(0));
+                    if (args.Values.Count > 0)
+                    {
+                        GetComponent<GameManager>().deSpawnPlayer((string) args.Values.ElementAt(0));
+                    }
+
                     break;
                 case "set-vector2D":
-                    Debug.Log("Join");
-                    Debug.Log(Convert.ToSingle(args.Values.ElementAt(0)));
-                    Debug.Log(Convert.ToSingle(args.Values.ElementAt(1)));
-                    Debug.Log((string) args.Values.ElementAt(2));
+                    if (args.Values.Count > 2)
+                    {
+                        Vector2 direction = new Vector2(Convert.ToSingle(args.Values.ElementAt(0)),
+                            Convert.ToSingle(args.Values.ElementAt(1)));
+                        GetComponent<GameManager>().movePlayer((string) args.Values.ElementAt(2), direction);
+                    }
+
                     break;
             }
         }
