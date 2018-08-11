@@ -66,15 +66,21 @@ public class PlayerMove : MonoBehaviour
 
     }
 
-    private void Update()
+    public void ServerUpdate(Vector2 input)
     {
         if (!inGame)
         {
-            CheckJoin();
+            CheckJoin(input);
             return;
         }
 
-        GetInput();
+        ProcessInput(input);
+    }
+
+    private void Update()
+    {
+        if (!inGame) return;
+
         Move();
 
         CheckStageLimits();
@@ -102,10 +108,9 @@ public class PlayerMove : MonoBehaviour
         rb.MovePosition(transform.position + (moveVector * speed));
     }
 
-    private void CheckJoin()
+    private void CheckJoin(Vector2 input)
     {
-        inputVector.x = Input.GetAxis("Horizontal");
-        inputVector.y = Input.GetAxis("Vertical");
+        inputVector = input;
 
         inputSqrMagnitude = inputVector.sqrMagnitude;
 
@@ -127,10 +132,9 @@ public class PlayerMove : MonoBehaviour
         inGame = true;
     }
 
-    private void GetInput()
+    private void ProcessInput(Vector2 input)
     {
-        inputVector.x = Input.GetAxis("Horizontal");
-        inputVector.y = Input.GetAxis("Vertical");
+        inputVector = input;
 
         inputSqrMagnitude = inputVector.sqrMagnitude;
 

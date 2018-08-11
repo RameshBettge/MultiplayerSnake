@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
-    private Dictionary<String, Transform> playerMap;
+    private Dictionary<String, PlayerMove> playerMap;
     private int numberOfFire = 0;
     private int numberOfIce = 0;
     private Boolean running = false;
@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        playerMap = new Dictionary<string, Transform>();
+        playerMap = new Dictionary<string, PlayerMove>();
         firePrefab = Resources.Load("Fire_Player") as GameObject;
         icePrefab = Resources.Load("Ice_Player") as GameObject;
         StartCoroutine(CountdownRoutine());
@@ -91,15 +91,17 @@ public class GameManager : MonoBehaviour
         if (numberOfIce > numberOfFire)
         {
             player = Instantiate(firePrefab, position, Quaternion.identity).transform;
+            numberOfFire++;
         }
         else
         {
             player = Instantiate(icePrefab, position, Quaternion.identity).transform;
+            numberOfIce++;
         }
 
         Debug.Log("Got Player " + id);
         
-        playerMap.Add(id, player);
+        playerMap.Add(id, player.GetComponent<PlayerMove>());
     }
 
     public void deSpawnPlayer(string id)
@@ -117,8 +119,9 @@ public class GameManager : MonoBehaviour
     {
         if (running)
         {
-            Transform player = playerMap[id];
-            player.GetComponent<Rigidbody2D>().AddForce(direction * Time.deltaTime * 1000, ForceMode2D.Force);
+            PlayerMove player = playerMap[id];
+            player.ServerUpdate(direction);
+            //player.GetComponent<Rigidbody2D>().AddForce(direction * Time.deltaTime * 1000, ForceMode2D.Force);
         }
     }
 

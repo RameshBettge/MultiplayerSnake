@@ -16,6 +16,7 @@ public class TrailPooler : MonoBehaviour
     void Awake()
     {
         firePrefab = Resources.Load("Fire_Trail") as GameObject;
+        icePrefab = Resources.Load("Ice_Trail") as GameObject;
 
         firePool = new Stack<GameObject>(stackSize);
         icePool = new Stack<GameObject>(stackSize);
