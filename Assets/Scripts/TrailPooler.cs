@@ -48,8 +48,13 @@ public class TrailPooler : MonoBehaviour
             stack = icePool;
         }
 
-        GameObject gO = stack.Pop();
-        if(gO == null)
+        GameObject gO;
+        if(stack.Count != 0)
+        {
+            gO = stack.Pop();
+
+        }
+        else
         {
             gO = Instantiate(prefab, transform);
         }
@@ -60,9 +65,19 @@ public class TrailPooler : MonoBehaviour
         return gO;
     }
 
-    public void ReturnTail(Stack<GameObject> stack, GameObject tail)
+    public void ReturnTail(Team team, GameObject trail)
     {
-        stack.Push(tail);
-        tail.SetActive(false);
+        Stack<GameObject> stack = null;
+        if (team == Team.Fire)
+        {
+            stack = firePool;
+        }
+        else
+        {
+            stack = icePool;
+        }
+
+        stack.Push(trail);
+        trail.SetActive(false);
     }
 }

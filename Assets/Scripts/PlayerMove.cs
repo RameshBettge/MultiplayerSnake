@@ -98,8 +98,8 @@ public class PlayerMove : MonoBehaviour
     {
         moveVector = Vector3.Lerp(moveVector, targetMove, Time.deltaTime * steerSpeed);
 
-        transform.position += moveVector * speed;
-        //rb.MovePosition(transform.position + (moveVector * speed));
+        //transform.position += moveVector * speed;
+        rb.MovePosition(transform.position + (moveVector * speed));
     }
 
     private void CheckJoin()
@@ -156,13 +156,12 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (!inGame)
         {
             return;
         }
-
 
         if (other.GetComponent<Obstacle>().team == team)
         {
@@ -176,8 +175,6 @@ public class PlayerMove : MonoBehaviour
                 Die("collided with " + team.ToString() + "trail");
             }
         }
-
-
     }
 
     private void Die(string reason)
