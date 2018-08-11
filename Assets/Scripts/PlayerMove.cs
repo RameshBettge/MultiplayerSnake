@@ -36,8 +36,12 @@ public class PlayerMove : MonoBehaviour
 
     Vector3 ScreenSize;
 
+    Rigidbody2D rb;
+
     private void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+
         team = GetComponent<Obstacle>().team;
         rend = GetComponent<SpriteRenderer>();
 
@@ -95,6 +99,7 @@ public class PlayerMove : MonoBehaviour
         moveVector = Vector3.Lerp(moveVector, targetMove, Time.deltaTime * steerSpeed);
 
         transform.position += moveVector * speed;
+        //rb.MovePosition(transform.position + (moveVector * speed));
     }
 
     private void CheckJoin()
@@ -149,7 +154,6 @@ public class PlayerMove : MonoBehaviour
                 targetMove = Vector3.ClampMagnitude(targetMove, 1f);
             }
         }
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -162,6 +166,7 @@ public class PlayerMove : MonoBehaviour
 
         if (other.GetComponent<Obstacle>().team == team)
         {
+            print("triggered");
             if (other.CompareTag("Player"))
             {
                 Merge();
