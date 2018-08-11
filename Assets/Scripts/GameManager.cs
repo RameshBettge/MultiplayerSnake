@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<String, PlayerMove> playerMap;
     private int numberOfFire = 0;
     private int numberOfIce = 0;
-    private Boolean running = false;
+    public Boolean running = false;
 
     private GameObject firePrefab;
     private GameObject icePrefab;
@@ -45,7 +45,17 @@ public class GameManager : MonoBehaviour
             TriggerStart();
         }
 
+
+        //if((numberOfFire + numberOfIce) < 2)
+        //{
+        //    StopGame();
+        //}
     }
+
+    //private void StopGame()
+    //{
+    //    running = false;
+    //}
 
     private void TriggerStart()
     {

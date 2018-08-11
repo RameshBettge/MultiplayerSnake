@@ -36,8 +36,8 @@ public class CreateTrail : MonoBehaviour
         GameObject trail = pooler.GetTrail(team, pos);
         TrailDecay decay = trail.GetComponent<TrailDecay>();
         decay.liveTime = decay.maxLiveTime;
+        decay.creator = this;
         trails.Add(decay);
-
     }
 
     void Update()
@@ -84,5 +84,11 @@ public class CreateTrail : MonoBehaviour
             trails.Remove(t);
             pooler.ReturnTrail(team, t.gameObject);
         }
+    }
+
+    public void RemoveTrail(GameObject trail)
+    {
+        trails.Remove(trail.GetComponent<TrailDecay>());
+        pooler.ReturnTrail(team, trail);
     }
 }

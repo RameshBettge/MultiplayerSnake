@@ -77,3 +77,5 @@ public class SocketIOC : MonoBehaviour
         Debug.Log("Disconnected socket");
     }
 }
+
+//If a player disconnects he will be despawned but his trails won't.

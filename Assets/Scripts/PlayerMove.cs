@@ -38,6 +38,13 @@ public class PlayerMove : MonoBehaviour
 
     Rigidbody2D rb;
 
+    float blinkTimer;
+    float blinkInterval = 1f;
+    bool blinked = false;
+
+    public float debugColor;
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -49,6 +56,22 @@ public class PlayerMove : MonoBehaviour
         sqrInputDeadzone = inputDeadzone * inputDeadzone;
 
         ScreenSize = new Vector3(Screen.width, Screen.height, 0f);
+
+        SetRandomColor();
+    }
+
+    private void SetRandomColor()
+    {
+        float r = GetRandomColorValue();
+        float g = GetRandomColorValue();
+        float b = GetRandomColorValue();
+        Color c = new Color(r, g, b, 1f);
+        rend.color = c;
+    }
+
+    float GetRandomColorValue()
+    {
+        return UnityEngine.Random.Range(0.4f, 1f);
     }
 
     void Spawn() //Add a timer so player doesn't accidentally immediately cancel invulnerability
@@ -70,16 +93,51 @@ public class PlayerMove : MonoBehaviour
     {
         if (!inGame)
         {
-            CheckJoin(input);
+            if (GameManager.instance.running)
+            {
+                CheckJoin(input);
+            }
+
+            //Blink();
             return;
         }
 
         ProcessInput(input);
     }
 
+    //private void Blink()
+    //{
+    //    blinkTimer += Time.deltaTime;
+    //    float target;
+
+    //    if (blinked)
+    //    {
+    //        target = 0f;
+    //    }
+    //    else
+    //    {
+    //        target = 1f;
+    //    }
+
+    //    Color c = rend.color;
+
+
+    //    if(blinkTimer >= blinkInterval)
+    //    {
+    //        blinked = !blinked;
+    //        blinkTimer = 0f;
+    //    }
+    //    else
+    //    {
+    //        c.a = (Mathf.Lerp(1 - target, target, blinkTimer / blinkInterval));
+    //    }
+
+    //    debugColor = blinkTimer / blinkInterval;
+    //}
+
     private void Update()
     {
-        if (!inGame) return;
+        if (!inGame || !GameManager.instance.running) return;
 
         Move();
 
@@ -169,7 +227,6 @@ public class PlayerMove : MonoBehaviour
 
         if (other.GetComponent<Obstacle>().team == team)
         {
-            print("triggered");
             if (other.CompareTag("Player"))
             {
                 Merge();
@@ -179,9 +236,21 @@ public class PlayerMove : MonoBehaviour
                 Die("collided with " + team.ToString() + "trail");
             }
         }
+        else
+        {
+            if (other.CompareTag("Player"))
+            {
+                other.GetComponent<PlayerMove>().Die("Collided with player of other team");
+                Die("Collided with player of other team");
+            }
+            else
+            {
+                other.GetComponent<TrailDecay>().BeDestroyed();
+            }
+        }
     }
 
-    private void Die(string reason)
+    public void Die(string reason)
     {
         Debug.Log(transform.name + "died. Reason: " + reason);
         Spawn();
