@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4542099759659728}
   - component: {fileID: 212683263727356218}
   - component: {fileID: 58003361548198820}
+  - component: {fileID: 114628028003272086}
   - component: {fileID: 114240475348289896}
   m_Layer: 0
   m_Name: Fire_Trail
@@ -69,6 +70,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+--- !u!114 &114628028003272086
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1295038895014222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ed767a3b8492af49a02e686febb233c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxLiveTime: 3
+  liveTime: 0
 --- !u!212 &212683263727356218
 SpriteRenderer:
   m_ObjectHideFlags: 1

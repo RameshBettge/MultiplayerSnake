@@ -21,9 +21,10 @@ GameObject:
   - component: {fileID: 4542099759659728}
   - component: {fileID: 212683263727356218}
   - component: {fileID: 58003361548198820}
+  - component: {fileID: 114611381266095684}
   - component: {fileID: 114240475348289896}
   m_Layer: 0
-  m_Name: Fire_Trail
+  m_Name: Ice_Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,6 +70,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+--- !u!114 &114611381266095684
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1295038895014222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ed767a3b8492af49a02e686febb233c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxLiveTime: 3
+  liveTime: 0
 --- !u!212 &212683263727356218
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -104,7 +118,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: bce3d1cade669f9489c9c24ac91c454d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9dc61fcc7c94518439716b78ddfb2c2b, type: 3}
   m_Color: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
   m_FlipX: 0
   m_FlipY: 0

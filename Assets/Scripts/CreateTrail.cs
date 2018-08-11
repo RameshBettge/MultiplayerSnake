@@ -13,7 +13,7 @@ public class CreateTrail : MonoBehaviour
     Vector3 lastSpawnPosition;
     Vector3 nextSpawnPosition;
 
-    float spawnDistance = 0.5f; 
+    float spawnDistance = 0.5f;
     float sqrSpawnDistance;
 
     bool nextPositionSet;
@@ -70,12 +70,19 @@ public class CreateTrail : MonoBehaviour
 
     private void DecayTrails() // first save all trails to be despawned in one list!!
     {
+        List<TrailDecay> toBeDespawned = new List<TrailDecay>();
+
         foreach (TrailDecay trail in trails)
         {
             if (trail.Decay(Time.deltaTime) <= 0f)
             {
-                pooler.ReturnTail(team, trail.gameObject);
+                toBeDespawned.Add(trail);
             }
+        }
+        foreach (TrailDecay t in toBeDespawned)
+        {
+            trails.Remove(t);
+            pooler.ReturnTrail(team, t.gameObject);
         }
     }
 }

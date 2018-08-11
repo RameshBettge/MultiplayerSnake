@@ -65,7 +65,7 @@ public class TrailPooler : MonoBehaviour
         return gO;
     }
 
-    public void ReturnTail(Team team, GameObject trail)
+    public void ReturnTrail(Team team, GameObject trail)
     {
         Stack<GameObject> stack = null;
         if (team == Team.Fire)
