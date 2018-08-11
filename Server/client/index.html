@@ -1,0 +1,84 @@
+<html>
+<head>
+    <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="js/underscore-min.js"></script>
+    <script type="text/javascript" src="js/backbone-min.js"></script>
+    <script type="text/javascript" src="js/joystick_view.js"></script>
+</head>
+<body>
+
+<script type="text/html" id="joystick-view">
+    <canvas id="joystickCanvas" width="<%= squareSize %>" height="<%= squareSize %>"
+            style="width: <%= squareSize %>px; height: <%= squareSize %>px;">
+    </canvas>
+</script>
+
+<div id="joystickContent">
+</div>
+<div>
+    x: <span id="xVal"></span><br/>
+    y: <span id="yVal"></span><br/>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var conn = new WebSocket("ws://localhost:8080");
+        conn.onopen = function (evt) {
+            console.log("connection opened");
+
+            function createPlayerID() {
+                function s4() {
+                    return Math.floor((1 + Math.random()) * 0x10000)
+                            .toString(16)
+                            .substring(1);
+                }
+
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+            }
+
+            var playerID = createPlayerID();
+            var x = 0;
+            var y = 0;
+
+            conn.send(JSON.stringify({"Type": "join", "Data": {"Player": playerID, "X": x, "Y": y}}));
+
+            conn.onclose = function (evt) {
+                console.log("connection closed");
+                conn.send(JSON.stringify({"Type": "leave", "Data": {"Player": playerID, "X": x, "Y": y}}));
+            };
+            conn.onmessage = function (evt) {
+                console.log(evt);
+                var msg = JSON.parse(evt.data);
+
+                var data = msg.data;
+
+                switch (msg.type) {
+                    case "frame" :
+                        break;
+                }
+            };
+
+            var joystickView = new JoystickView(500, function (callbackView) {
+                $("#joystickContent").append(callbackView.render().el);
+                setTimeout(function () {
+                    callbackView.renderSprite();
+                }, 0);
+            });
+
+            joystickView.bind("verticalMove", function (evt) {
+                $("#yVal").html(evt);
+                x = evt;
+            });
+            joystickView.bind("horizontalMove", function (evt) {
+                $("#xVal").html(evt);
+                y = evt;
+            });
+
+            setInterval(function () {
+                conn.send(JSON.stringify({"Type": "move", "Data": {"Player": playerID, "X": x, "Y": y}}));
+            }, 10);
+        };
+    });
+</script>
+</body>
+</html>
