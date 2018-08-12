@@ -492,7 +492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2d023bbfbe6194d8700701c233e75e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverAddress: http://192.168.3.207:9876
+  serverAddress: http://localhost:9876
 --- !u!114 &1748845869
 MonoBehaviour:
   m_ObjectHideFlags: 0
