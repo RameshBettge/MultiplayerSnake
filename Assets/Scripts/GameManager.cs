@@ -138,14 +138,5 @@ public class GameManager : MonoBehaviour
     public void setRunning(Boolean running)
     {
         this.running = running;
-
-        if (running)
-        {
-            GameObject.FindObjectOfType<SocketIOC>().socket.Emit("game-running", "");
-        }
-        else
-        {
-            GameObject.FindObjectOfType<SocketIOC>().socket.Emit("game-ended", "");
-        }
     }
 }

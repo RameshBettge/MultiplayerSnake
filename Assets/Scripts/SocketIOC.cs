@@ -3,68 +3,74 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleJson;
-using SocketIOClient;
-using SocketIOClient.Messages;
 using UnityEngine;
+using WebSocketSharp;
+using WebSocketSharp.Server;
+using Newtonsoft.Json;
+
+public class Message
+{
+    public string Type;
+    public MessageData Data;
+}
+
+public class MessageData
+{
+    public string Player;
+    public double X;
+    public double Y;
+}
+
+public class QueueSocket : WebSocketBehavior
+{
+    private Queue<string> messageQueue;
+
+    public QueueSocket(Queue<string> messageQueue)
+    {
+        this.messageQueue = messageQueue;
+    }
+
+    protected override void OnMessage(MessageEventArgs e)
+    {
+        messageQueue.Enqueue(e.Data);
+    }
+}
 
 public class SocketIOC : MonoBehaviour
 {
-    public Client socket;
+    public WebSocketServer socket;
 
-    public string serverAddress;
-
-    private Queue<IMessage> messageQueue;
+    private Queue<string> messageQueue;
 
     void Start()
     {
-        messageQueue = new Queue<IMessage>();
+        messageQueue = new Queue<string>();
 
-        socket = new Client(serverAddress);
-        socket.On("connect", (fn) => { socket.Emit("add-user", "{\"userId\":\"game\", \"userName\":\"game\"}"); });
-        socket.On("user-joined", (data) => { messageQueue.Enqueue(data); });
-        socket.On("user-left", (data) => { messageQueue.Enqueue(data); });
-        socket.On("set-vector2D", (data) => { messageQueue.Enqueue(data); });
-        socket.Error += (sender, e) => { Debug.Log("socket Error: " + e.Message.ToString()); };
-
-        socket.Connect();
-        Debug.Log("Connected to socket");
+        socket = new WebSocketServer(8080);
+        socket.AddWebSocketService("/", () => new QueueSocket(messageQueue));
+        socket.Start();
     }
 
     void Update()
     {
         for (int i = 0; i < messageQueue.Count; i++)
         {
-            IMessage message = messageQueue.Dequeue();
-
-            JsonObject args = (JsonObject) message.Json.args[0];
-
-            Debug.Log(message.Json.name);
-            
-            switch (message.Json.name)
+            string json = messageQueue.Dequeue();
+            Message message = JsonConvert.DeserializeObject<Message>(json);
+            switch (message.Type)
             {
-                case "user-joined":
-                    if (args.Values.Count > 1)
-                    {
-                        Debug.Log((string) args.Values.ElementAt(1));
-                        GetComponent<GameManager>().spawnPlayer((string) args.Values.ElementAt(0));
-                    }
-
+                case "join":
+                    GetComponent<GameManager>().spawnPlayer(message.Data.Player);
                     break;
-                case "user-left":
-                    if (args.Values.Count > 0)
-                    {
-                        GetComponent<GameManager>().deSpawnPlayer((string) args.Values.ElementAt(0));
-                    }
-
+                case "leave":
+                    GetComponent<GameManager>().deSpawnPlayer(message.Data.Player);
                     break;
-                case "set-vector2D":
-                    if (args.Values.Count > 2)
-                    {
-                        Vector2 direction = new Vector2(Convert.ToSingle(args.Values.ElementAt(0)),
-                            Convert.ToSingle(args.Values.ElementAt(1)));
-                        GetComponent<GameManager>().movePlayer((string) args.Values.ElementAt(2), direction);
-                    }
+                case "move":
+                    Vector2 direction = new Vector2(
+                        Convert.ToSingle(message.Data.Y),
+                        Convert.ToSingle(message.Data.X)
+                    );
+                    GetComponent<GameManager>().movePlayer(message.Data.Player, direction);
 
                     break;
             }
@@ -73,8 +79,7 @@ public class SocketIOC : MonoBehaviour
 
     void OnDestroy()
     {
-        socket.Close();
-        Debug.Log("Disconnected socket");
+        socket.Stop();
     }
 }
 
