@@ -492,7 +492,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2d023bbfbe6194d8700701c233e75e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverAddress: http://localhost:9876
 --- !u!114 &1748845869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,7 +587,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: http://192.168.3.207:9876
+  m_Text: http://192.168.3.207:8080
 --- !u!222 &1787028581
 CanvasRenderer:
   m_ObjectHideFlags: 0
