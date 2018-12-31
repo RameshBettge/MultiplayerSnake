@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
+    public bool second;
+
     Team team;
 
     SpriteRenderer rend;
@@ -44,7 +46,6 @@ public class PlayerMove : MonoBehaviour
 
     public float debugColor;
 
-
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -66,7 +67,7 @@ public class PlayerMove : MonoBehaviour
         float g = GetRandomColorValue();
         float b = GetRandomColorValue();
         Color c = new Color(r, g, b, 1f);
-        rend.color = c;
+        //rend.color = c;
     }
 
     float GetRandomColorValue()
@@ -79,6 +80,8 @@ public class PlayerMove : MonoBehaviour
         Color c = rend.color;
         c.a = 0.5f;
         rend.color = c;
+
+        this.enabled = false;
 
         inGame = false;
 
@@ -137,7 +140,52 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
-        if (!inGame || !GameManager.instance.running) return;
+        Vector2 input = Vector2.zero;
+
+        if (second)
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                input.y = 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                input.y = -1;
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                input.x = 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.A))
+            {
+                input.x = -1;
+            }
+        }
+        else
+        {
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                input.y = 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                input.y = -1;
+            }
+
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                input.x = 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                input.x = -1;
+            }
+        }
+
+        ProcessInput(input);
+
+        //if (!inGame || !GameManager.instance.running) return;
 
         Move();
 
@@ -186,7 +234,7 @@ public class PlayerMove : MonoBehaviour
     {
         Color c = rend.color;
         c.a = 1f;
-        rend.color = c;
+        //rend.color = c;
         inGame = true;
     }
 
@@ -220,10 +268,10 @@ public class PlayerMove : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!inGame)
-        {
-            return;
-        }
+        //if (!inGame)
+        //{
+        //    return;
+        //}
 
         if (other.GetComponent<Obstacle>().team == team)
         {
@@ -252,6 +300,7 @@ public class PlayerMove : MonoBehaviour
 
     public void Die(string reason)
     {
+
         Debug.Log(transform.name + "died. Reason: " + reason);
         Spawn();
     }
